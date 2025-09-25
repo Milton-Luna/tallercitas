@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CitaModule } from './cita/cita.module';
@@ -17,7 +16,7 @@ import { PacienteModule } from './paciente/paciente.module';
     CitaModule,
     MedicoModule,
     PacienteModule,/* */
-    TypeOrmModule.forRootAsync({ //investigar como pasar esto  a variables de entorno
+    TypeOrmModule.forRootAsync({  
      inject:[ConfigService],
      useFactory: (configService: ConfigService) => ({
       type: 'mysql',

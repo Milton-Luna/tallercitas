@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Body } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, Delete } from '@nestjs/common';
 import { CreateCitaDto } from './dto/create-cita.dto';
 import { CitasService } from './cita.service';
 
@@ -11,8 +11,18 @@ export class CitasController {
     return this.citasService.create(dto);
   }
 
+
+  @Get()  findAll() {
+    return this.citasService.findall();
+  }
+  
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.citasService.findOne(+id);
+  }
+
+  @Delete(':id')
+   async remove(@Param('id') id: string) {
+    return this.citasService.remove(+id);
   }
 }

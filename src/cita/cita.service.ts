@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateCitaDto } from './dto/create-cita.dto';
@@ -18,19 +18,33 @@ export class CitasService {
   ) {}
 
   async create(dto: CreateCitaDto) {
-    const paciente = await this.pacientesRepo.findOne({ where: { id: dto.pacienteId } });
-    const medico = await this.medicosRepo.findOne({ where: { id: dto.medicoId } });
-    const cita = this.citasRepo.create({
-      ...(dto.fecha && { fecha: dto.fecha }),
-      ...(dto.hora && { hora: dto.hora }),
-      ...(dto.motivo && { motivo: dto.motivo }),
-      ...(paciente && { paciente }),
-      ...(medico && { medico }),
-    });
-    return this.citasRepo.save(cita);
+  const paciente = await this.pacientesRepo.findOneBy({ id: dto.pacienteId });
+  if (!paciente) throw new NotFoundException('Paciente no encontrado');
+
+  const medico = await this.medicosRepo.findOneBy({ id: dto.medicoId });
+  if (!medico) throw new NotFoundException('Médico no encontrado');
+
+  const cita = this.citasRepo.create({
+    fecha: dto.fecha,
+    hora: dto.hora,
+    motivo: dto.motivo,
+    paciente,
+    medico,
+  });
+
+  return await this.citasRepo.save(cita);
+}
+
+  findall() {
+    return this.citasRepo.find({ relations: ['paciente', 'medico'] });
   }
 
   findOne(id: number) {
     return this.citasRepo.findOne({ where: { id } });
+  }
+
+  async remove(id: number): Promise<string> {
+    await this.citasRepo.delete(id);
+    return "Medico eliminado exitosamente";
   }
 }

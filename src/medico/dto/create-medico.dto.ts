@@ -6,16 +6,16 @@ export class CreateMedicoDto {
 
 
   @IsString()
-  apellidos?: string;
+  apellido: string;
 
   @IsString()
   especialidad: string;
 
 
   @IsString()
-  telefono?: string;
+  telefono: string;
 
  
   @IsEmail()
-  email?: string;
+  email: string;
 }

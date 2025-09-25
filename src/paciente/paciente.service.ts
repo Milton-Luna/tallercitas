@@ -11,20 +11,23 @@ export class PacientesService {
     private pacientesRepo: Repository<PacienteEntity>,
   ) {}
 
-  create(dto: CreatePacienteDto) {
+  async create(dto: CreatePacienteDto): Promise<string> {
     const paciente = this.pacientesRepo.create(dto);
-    return this.pacientesRepo.save(paciente);
+    await this.pacientesRepo.save(paciente);
+    return "Paciente creado exitosamente";
   }
 
-  findAll() {
-    return this.pacientesRepo.find();
+  async findAll() : Promise<PacienteEntity[]> {
+    return await this.pacientesRepo.find();
   }
 
-  findOne(id: number) {
-    return this.pacientesRepo.findOne({ where: { id } });
+  async findOne(id: number): Promise<PacienteEntity | null> {
+    return await this.pacientesRepo.findOne({ where: { id } });
   }
 
-  remove(id: number) {
-    return this.pacientesRepo.delete(id);
+  async remove(id: number): Promise<string> {
+    
+    await this.pacientesRepo.delete(id);
+    return "Paciente eliminado exitosamente";
   }
 }

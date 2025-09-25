@@ -12,19 +12,47 @@ export class MedicosService {
     private medicosRepo: Repository<MedicoEntity>,
   ) {}
 
-  create(dto: CreateMedicoDto) {
+  async create(dto: CreateMedicoDto):Promise<string> {
     const medico = this.medicosRepo.create(dto);
-    return this.medicosRepo.save(medico);
+    await this.medicosRepo.save(medico);
+    return "Médico creado exitosamente";
   }
 
-  findOne(id: number) {
-    return this.medicosRepo.findOne({ where: { id } });
+  async findAll() {
+    return await this.medicosRepo.find();
+  }
+  
+  async findOne(id: number) {
+    return await this.medicosRepo.findOne({ where: { id } });
   }
 
-  async update(id: number, dto: UpdateMedicoDto) {
-    const medico = await this.medicosRepo.findOne({ where: { id } });
-    if (!medico) throw new NotFoundException('Médico no encontrado');
-    Object.assign(medico, dto);
-    return this.medicosRepo.save(medico);
+ async update(id: number, dto: UpdateMedicoDto) {
+  const result = await this.medicosRepo
+    .createQueryBuilder()
+    .update('medico')
+    .set({
+      nombre: dto.nombre,
+      apellidos: dto.apellidos,
+      especialidad: dto.especialidad,
+      telefono: dto.telefono,
+      email: dto.email,
+    })
+    .where('id = :id', { id })
+    .execute();
+
+  if (result.affected === 0) {
+    throw new NotFoundException('Médico no encontrado');
+  }
+
+  return this.medicosRepo
+    .createQueryBuilder('medico')
+    .where('medico.id = :id', { id })
+    .getOne();
+}
+
+
+  async remove(id: number): Promise<string> {
+    await this.medicosRepo.delete(id);
+    return "Medico eliminado exitosamente";
   }
 }

@@ -1,5 +1,5 @@
 import { CitaEntity } from '../../cita/entity/cita.entity';
-import { OneToMany, Entity, Column, PrimaryGeneratedColumn} from 'typeorm/browser';
+import { OneToMany, Entity, Column, PrimaryGeneratedColumn} from 'typeorm';
 @Entity('paciente')
 export class PacienteEntity{
     @PrimaryGeneratedColumn()
